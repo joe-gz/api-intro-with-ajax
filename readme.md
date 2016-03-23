@@ -30,6 +30,8 @@ Because why recreate data when we don't have to? Think about past projects or id
 * [http://dev.markitondemand.com/Api/Quote/json?symbol=AAPL](http://dev.markitondemand.com/Api/Quote/json?symbol=AAPL)
 * [http://dev.markitondemand.com/Api/Quote/json?symbol=GOOGL](http://dev.markitondemand.com/Api/Quote/json?symbol=GOOGL)
 
+### Think, Pair, Share (5 mins)
+
 Form pairs and explore the API links in the below table. Record any observations that come to mind. In particular, think about what you see in the URL and the API response itself.
 
 | API | Sample URL |
@@ -102,23 +104,53 @@ While the majority of APIs are free to use, many of them require an API "key" th
 
 * With key: [http://api.giphy.com/v1/gifs/search?q=funny+cat&api_key=dc6zaTOxFJmzC](http://api.giphy.com/v1/gifs/search?q=funny+cat&api_key=dc6zaTOxFJmzC)
 
-> It is very important that you not push your API keys to a public Github repo. [Figaro](https://github.com/laserlemon/figaro) is a useful gem to utilize environment variables for hiding API keys.
+**It is very important that you not push your API keys to a public Github repo.**
 
-## Good Starter APIs
+## AJAX
 
-There is an immense number of APIs out there from which you can pull data.
+*AJAX* (Asynchronous Javascript and XML) si the method through which we are able to make the usual HTTP requests: 'GET' 'POST' 'PUT' 'PATCH' 'DELETE' (depending on the access we have) to a given API.
 
-| API | Sample URL |
-|-----|------------|
-| **[This for That](http://itsthisforthat.com/)** | http://itsthisforthat.com/api.php?json |
-| **[iTunes](https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html)** | http://itunes.apple.com/search?term=adele |
-| **[Giphy](https://github.com/Giphy/GiphyAPI)** | http://api.giphy.com/v1/gifs/search?q=funny+cat&api_key=dc6zaTOxFJmzC |
-| **[OMDB API](http://www.omdbapi.com/)** | http://www.omdbapi.com/?t=Game%20of%20Thrones&Season=1 |
-| **[StarWars](http://swapi.co/)** | http://swapi.co/api/people/3 |
-| **[Stocks](http://dev.markitondemand.com/MODApis/)** | http://dev.markitondemand.com/Api/Quote/json?symbol=AAPL |
-> Note the variety in the URLs used to access these APIs. Do any of them look similar to what you've made in class?
+## GET data from an external API using AJAX
 
-## Rails and JSON
+### I Do: GET example
+
+Let's build a very simple app that posts a movie title and poster after searching for it!
+[OMDB movie search](https://github.com/joe-gz/omdb-api)
+
+The starter code is linked above. It contains a basic HTML/CSS/JS setup. If you open up the HTML in the browser, you will notice that searching for something returns no results.
+
+Let's go ahead and add in the AJAX request:
+
+```js
+// get value from search input field
+var keyword = $("input[name='keyword']").val();
+var url = "https://www.omdbapi.com/?t="+keyword
+$.ajax({
+  url: url,
+  type: "GET",
+  dataType: "json"
+}).done ( function(response){
+  console.log(response);
+  // call movie function below to append movie titles
+  movie(response);
+}).fail ( function (){
+  console.log("fail");
+}).always( function(){
+  console.log("Something happens");
+})
+```
+
+What does all of this mean?
+
+*Bonus*: you'll notice that if you simply search for "Star Wars", it doesn't really work! why is that? Is there another url you can use from OMDB API that would return all Star Wars movies?
+
+### You Do: GET from Tunr
+
+## AJAX and the rest of CRUD
+
+### I Do: POST a new artist
+
+### You Do: Finish Tunr CRUD!
 
 ## Conclusion (5 minutes / 2:40)
 
