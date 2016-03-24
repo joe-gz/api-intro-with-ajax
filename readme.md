@@ -108,7 +108,12 @@ While the majority of APIs are free to use, many of them require an API "key" th
 
 ## AJAX
 
-*AJAX* (Asynchronous Javascript and XML) si the method through which we are able to make the usual HTTP requests: 'GET' 'POST' 'PUT' 'PATCH' 'DELETE' (depending on the access we have) to a given API.
+**So we know what an API is, now what?**
+
+How can we use an API to dynamically manipulate the DOM with the given data? In Rails, we would have to make a request through the server, and refresh the page with returned data.  Now we can do this on the client side! As you'll come to learn, this allows us to build single page applications that do not require refreshes.
+
+How do we do this?
+*AJAX* (Asynchronous Javascript and XML) is the method through which we are able to make the usual HTTP requests: 'GET' 'POST' 'PUT' 'PATCH' 'DELETE' (depending on the access we have) to a given API.
 
 ## GET data from an external API using AJAX
 
@@ -140,29 +145,98 @@ $.ajax({
 })
 ```
 
-What does all of this mean?
+**What does all of this mean?**
+
+$.ajax takes an object as an argument with at least three key-value pairs...
+(1) The URL endpoint for the JSON object.
+(2) Type of HTTP request.
+(3) Datatype. Usually JSON.
+
+The `url` that we've included is the api url from OMDB, with the added keyword that we are searching for. The `type` is simply the verb we want performed; in this case GET. And, the `datatype` will typically be `json`.
+
+### Promises
+
+Following `datatype`, there are three methods that we call promises.  In short, these tell the `$.ajax` request what to do if the request is successful, fails, or both.
+
+* `.done` requires a callback that determines what we do after a successful AJAX call
+* `.fail` requires a callback that determines what we do after an unsuccessful AJAX call
+* `.always` requires a callback that determines what we do regardless of a successful or unsuccessful call
 
 *Bonus*: you'll notice that if you simply search for "Star Wars", it doesn't really work! why is that? Is there another url you can use from OMDB API that would return all Star Wars movies?
 
 ### You Do: GET from Tunr
 
+Fork and clone another [Tunr](https://github.com/ga-wdi-exercises/tunr_rails_ajax) repo!
+Once you've cloned the repo, `cd` into it and run the usual commands...
+
+```bash
+$ bundle install
+$ rake db:create db:migrate db:seed
+```
+
+We can now use `$.ajax()` to make asynchronous HTTP requests to our Tunr app! Let's go ahead and create a new Artists controller action and corresponding view: `test_ajax`
+
+#### Setting up a view to test AJAX with (10/85)
+Let's update our routes in `config/routes.rb` for a new route to test all of our AJAX calls in:
+
+```ruby
+get '/test_ajax', to: 'artists#test_ajax'
+```
+
+in `app/controllers/artists_controller.rb`:
+
+```ruby
+# We're just creating this so we can test AJAX on a separate view, test_ajax.html.erb.
+def test_ajax
+end
+```
+
+Create `app/views/artists/test_ajax.html.erb` and place the following content:
+
+```html
+<div class="test_ajax_get">AJAX GET!</div>
+<div class="test_ajax_post">AJAX POST!</div>
+<div class="test_ajax_put">AJAX PUT!</div>
+<div class="test_ajax_delete">AJAX DELETE!</div>
+```
+
+#### AJAX GET (5/90)
+Great, everything's working. Let's try doing a `GET` request to our API like we did with the Weather underground API. In `app/assets/javascripts/application.js`:
+
+```js
+$(document).ready(function(){
+  $(".test_ajax_get").on("click", function(){
+    $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: "http://localhost:3000/artists"
+    }).done(function(response) {
+      console.log(response);
+    }).fail(function(response){
+      console.log("Ajax get request failed.");
+    })
+  })
+})
+```
+
+> If we access the response object, we can see all of the artists that were seeded in the database. Inside the done promise, we can interact with and display all the contents of the response.
+
+*Bonus*: Render the data on the browser!
+*Hint*: similar to the movie app, check the response
+
 ## AJAX and the rest of CRUD
 
 ### I Do: POST a new artist
 
-### You Do: Finish Tunr CRUD!
+### You Do: Finish Tunr Artist CRUD!
+
+### Bonus You Do: CRUD for Songs
 
 ## Conclusion (5 minutes / 2:40)
 
 Review Learning Objectives
 
-## Resources:
-* [Andy's blog](http://andrewsunglaekim.github.io/Server-side-api-calls-wrapped-in-ruby-classes/)
-* [Postman](https://www.getpostman.com/)
-* [Intro to APIs](https://zapier.com/learn/apis/chapter-1-introduction-to-apis/)
-* [Practice with APIs](https://github.com/ga-dc/weather_teller)
-
-## More
+## Hungry for More?
 
 ### Postman: A Closer Look at an API Request
 
@@ -180,3 +254,9 @@ Here's an example of a successful `200 OK` API call...
 And here's an example of an unsuccessful `403 Forbidden` API call. Why did it fail?
 
 ![Postman screenshot fail](http://i.imgur.com/r3nIhGH.png)
+
+## Resources:
+* [Andy's blog](http://andrewsunglaekim.github.io/Server-side-api-calls-wrapped-in-ruby-classes/)
+* [Postman](https://www.getpostman.com/)
+* [Intro to APIs](https://zapier.com/learn/apis/chapter-1-introduction-to-apis/)
+* [Practice with APIs](https://github.com/ga-dc/weather_teller)
